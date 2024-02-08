@@ -21,6 +21,11 @@ namespace PrimeiraAPI.Services.FuncionarioService
             try
             {
                 serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
+
+                if(serviceResponse.Dados.Count == 0)
+                {
+                    serviceResponse.Mensagem = "Nenhum dado encontrado!";
+                }
             }
             catch (Exception ex)
             {
@@ -33,19 +38,92 @@ namespace PrimeiraAPI.Services.FuncionarioService
 
         }
 
-        public async Task<ServiceResponse<FuncionarioModel>> CreateFuncionarios(FuncionarioModel novoFuncionario)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> CreateFuncionarios(FuncionarioModel novoFuncionario)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                if (novoFuncionario == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Informar dados!";
+                    serviceResponse.Sucesso = false;
+                }
+                
+                _context.Add(novoFuncionario);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false; 
+            }
+  
+             return serviceResponse;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+            
+            try
+            {
+                if(id == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Informar Dados!";
+                    serviceResponse.Sucesso = false;
+                }
+
+                _context.Remove(id);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Mensagem= ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
         }
 
-        public Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id)
+        public async Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<FuncionarioModel> serviceResponse = new ServiceResponse<FuncionarioModel>();
+            
+            try
+            {
+                if(id == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Informar Dados!";
+                    serviceResponse.Sucesso = false;
+                }
+
+                FuncionarioModel funcionario = await _context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (funcionario == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Nenhum dado encontrado!";
+                    serviceResponse.Sucesso = false;
+                }
+
+                serviceResponse.Dados = funcionario;
+
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Mensagem= ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
         }
 
         public Task<ServiceResponse<List<FuncionarioModel>>> InativaFuncionario(int id)

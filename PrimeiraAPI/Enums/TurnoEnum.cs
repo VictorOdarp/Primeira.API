@@ -1,6 +1,6 @@
 ﻿namespace PrimeiraAPI.Enums
 {
-    public enum TurnoEnum
+    public enum TurnoEnum 
     {
         Manha,
         Tarde,
