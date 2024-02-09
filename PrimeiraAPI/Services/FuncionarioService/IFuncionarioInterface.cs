@@ -9,7 +9,7 @@ namespace PrimeiraAPI.Services.FuncionarioService
         Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id);
         Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario);
         Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id);
-        Task<ServiceResponse<List<FuncionarioModel>>> InativaFuncionario(int id);
+        Task<ServiceResponse<List<FuncionarioModel>>> DataAlteracaoFuncionario(int id);
 
 
     }

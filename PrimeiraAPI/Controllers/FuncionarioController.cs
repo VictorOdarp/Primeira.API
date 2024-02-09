@@ -47,5 +47,19 @@ namespace PrimeiraAPI.Controllers
             var deleteFuncionario = await _funcionarioInterface.DeleteFuncionario(id);
             return Ok(deleteFuncionario);
         }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> UpdateFuncionario(FuncionarioModel update)
+        {
+            var funcionario = await _funcionarioInterface.UpdateFuncionario(update);
+            return Ok(funcionario);
+        }
+
+        [HttpPut("InativaFuncionario")]
+        public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> DataAlteracaoFuncionario(int id)
+        {
+            var funcionario = await _funcionarioInterface.DataAlteracaoFuncionario(id);
+            return Ok(funcionario);
+        }
     }
 }

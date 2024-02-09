@@ -71,14 +71,16 @@ namespace PrimeiraAPI.Services.FuncionarioService
             
             try
             {
-                if(id == null)
+                FuncionarioModel funcionario = await _context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (id == null)
                 {
                     serviceResponse.Dados = null;
                     serviceResponse.Mensagem = "Informar Dados!";
                     serviceResponse.Sucesso = false;
                 }
 
-                _context.Remove(id);
+                _context.Funcionarios.Remove(funcionario);
                 await _context.SaveChangesAsync();
 
                 serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
@@ -126,14 +128,66 @@ namespace PrimeiraAPI.Services.FuncionarioService
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> InativaFuncionario(int id)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> DataAlteracaoFuncionario(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                FuncionarioModel funcionario = await _context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (funcionario == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Informar Dados!";
+                    serviceResponse.Sucesso = false;
+                }
+
+                funcionario.DataDeAlteracao = DateTime.Now.ToLocalTime();
+
+                _context.Funcionarios.Update(funcionario);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
+
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                FuncionarioModel funcionario = await _context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(x => x.Id == editadoFuncionario.Id);
+
+                if (editadoFuncionario == null)
+                {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Nenhum dado encontrado!";
+                    serviceResponse.Sucesso = false;
+                }
+
+                _context.Funcionarios.Update(editadoFuncionario);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = await _context.Funcionarios.ToListAsync();
+
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+
+            return serviceResponse;
         }
     }
 }
